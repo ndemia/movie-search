@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 const handler = async (event) => {
 
-  let movieName = event.queryStringParameters.s;
+  const movieName = event.queryStringParameters.s;
   const API_KEY = process.env.API_KEY;
   const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}`;
 
