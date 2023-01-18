@@ -7,17 +7,23 @@ const handler = async (event) => {
   const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}`;
 
   try {
-    let res = await fetch(URL);
-    let data = await res.json();
-    
+    let response = await fetch(URL);
+
+    // if (!response.ok) {
+    //   const message = `An error has occured: ${response.status}`;
+    //   throw new Error(message);
+    // }
+
+    let movieSearchResults = await response.json();
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data)
+      body: JSON.stringify(movieSearchResults)
     };
     
   } catch (error) {
-    return { 
-      statusCode: 500, 
+    return {
+      statusCode: 500,
       body: error.toString()
     };
   };
