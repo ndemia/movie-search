@@ -8,12 +8,6 @@ const handler = async (event) => {
 
   try {
     let response = await fetch(URL);
-
-    // if (!response.ok) {
-    //   const message = `An error has occured: ${response.status}`;
-    //   throw new Error(message);
-    // }
-
     let movieSearchResults = await response.json();
 
     return {

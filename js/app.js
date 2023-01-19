@@ -1,7 +1,7 @@
 async function fetchMovie (movieName) {
 
   const response = await fetch(`/.netlify/functions/fetch-movie?s=${movieName}`);
-  const movieSearchResults = response.json();
+  const movieSearchResults = await response.json();
   return movieSearchResults;
 }
 
