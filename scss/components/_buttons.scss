@@ -1,0 +1,10 @@
+@use '../abstracts/' as *;
+
+.btn {
+  border: 0;
+  background-color: $neon-blue;
+  color: $white;
+  padding: 0.3rem 2rem;
+  border-radius: 2px;
+  cursor: pointer;
+}

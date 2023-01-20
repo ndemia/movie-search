@@ -1,23 +1,7 @@
-.grid {
+.main {
 	display: grid;
 	grid-template-columns: 1fr;
-	grid-template-areas:
-		"navigation"
-		"header"
-		"aside"
-		"description"
-		"footer";
-	padding: 1rem;
-	
-	
-	@media (min-width: 768px) {
-		grid-template-rows: repeat(4, min-content);
-		grid-template-columns: clamp(50%, 350px, 100%);
-		grid-template-areas:
-			"navigation navigation"
-			"header header"
-			"description description"
-			"footer footer";
-		padding: 2rem;
-	}
+	grid-template-rows: minmax(min-content, 20vh);
+	justify-items: center;
+	align-items: end;
 }

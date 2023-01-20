@@ -2,3 +2,8 @@
 @use '../base' as *;
 @use '../components' as *;
 @use '../layout' as *;
+
+body {
+  background-color: $gray-9;
+  color: $white;
+}
