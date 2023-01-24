@@ -4,6 +4,6 @@
 @use '../layout' as *;
 
 body {
-  background-color: $blue-gray-9;
-  color: $white;
+  background-color: var(--blue-gray-9);
+  color: var(--white);
 }
