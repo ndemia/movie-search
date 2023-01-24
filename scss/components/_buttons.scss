@@ -1,10 +1,23 @@
 @use '../abstracts/' as *;
 
 .btn {
+  cursor: pointer;
+  padding: 0.3rem 1.5rem;
   border: 0;
+  border-radius: 2px;
   background-color: $neon-blue;
   color: $white;
-  padding: 0.3rem 2rem;
-  border-radius: 2px;
-  cursor: pointer;
+  box-shadow: inset 0 2px 0 $neon-blue-light, 0 2px 5px hsla(0, 0%, 0%, .5);
+
+  &:hover, &:focus {
+    background-color: $neon-blue-dark;
+    box-shadow: inset 0 2px 0 $neon-blue-dark, 0 2px 5px hsla(0, 0%, 0%, .5);
+    color: $gray-3;
+  }
+
+  &:active {
+    background-color: $neon-blue-darkest;
+    box-shadow: none;
+    color: $gray-5;
+  }
 }

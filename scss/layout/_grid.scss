@@ -3,5 +3,6 @@
 	grid-template-columns: 1fr;
 	grid-template-rows: minmax(min-content, 20vh);
 	justify-items: center;
-	align-items: end;
+	align-content: start;
+	height: 100vh;
 }
