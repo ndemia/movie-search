@@ -4,7 +4,7 @@ const handler = async (event) => {
 
   const movieName = event.queryStringParameters.s;
   const API_KEY = process.env.API_KEY;
-  const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}`;
+  const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}&type=movie`;
 
   try {
     let response = await fetch(URL);
