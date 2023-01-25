@@ -1,7 +1,7 @@
 .main {
 	display: grid;
 	grid-template-columns: 1fr;
-	grid-template-rows: minmax(min-content, 20vh);
+	grid-template-rows: 1fr 1fr;
 	justify-items: center;
 	align-content: start;
 	height: 100vh;
