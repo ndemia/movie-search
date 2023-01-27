@@ -46,7 +46,7 @@ function toggleLoader () {
 
 function showResults (searchResults) {
 
-  // If movie not found
+  console.log(searchResults)
 
   searchResults.Search.forEach((movie, index) => {    
     document.querySelector('.search-results').insertAdjacentHTML('beforeend',
