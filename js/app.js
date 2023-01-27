@@ -1,8 +1,3 @@
-// UI variables
-const searchButton = document.querySelector('.btn--submit');
-
-
-
 async function fetchMovie (movieName) {
 
   const response = await fetch(`/.netlify/functions/fetch-movie?s=${movieName}`);
@@ -42,7 +37,7 @@ function enableForm (e) {
 }
 
 
-
+// Show and hide the loader
 function toggleLoader () {
   document.querySelector('.loader').classList.toggle('hidden');
 }
@@ -53,10 +48,7 @@ function showResults (searchResults) {
 
   // If movie not found
 
-  searchResults.Search.forEach((movie, index) => {
-
-    console.log(movie)
-    
+  searchResults.Search.forEach((movie, index) => {    
     document.querySelector('.search-results').insertAdjacentHTML('beforeend',
     `<div class="card">
       <figure class="card__figure">
@@ -69,16 +61,27 @@ function showResults (searchResults) {
 }
 
 
-
+// Search action
 document.querySelector('.search').addEventListener('submit', (e) => {
 
-  console.log('a')
+  // Don't want the form to submit
   e.preventDefault();
 
+  // Check if there are results present from a previous search, so to provide a clean state
+  // If exists, save that NodeList of elements (each search result)
+  if (cards = document.querySelectorAll('.card')) {
+
+    // Iterate and remove all of them
+    cards.forEach((card) => card.remove());
+  }
+
+  // Save the name of the movie to search
   let movieName = document.querySelector('.search__box').value;
 
+  // Disable the form while searching, using the event as parameter
   disableForm(e);
 
+  // Show loader while searching
   toggleLoader();
 
   // Simulate delay for illustration purposes
