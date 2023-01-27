@@ -1,0 +1,20 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  padding: 1rem;
+  border-radius: var(--br);
+  background-color: var(--gray-3);
+
+  &__image {
+
+  }
+
+  &__title {
+    color: var(--neon-blue-dark);
+  }
+
+  &__year {
+    color: var(--neon-blue-darkest)
+  }
+}

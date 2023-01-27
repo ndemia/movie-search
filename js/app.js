@@ -1,3 +1,8 @@
+// UI variables
+const searchButton = document.querySelector('.btn--submit');
+
+
+
 async function fetchMovie (movieName) {
 
   const response = await fetch(`/.netlify/functions/fetch-movie?s=${movieName}`);
@@ -8,50 +13,85 @@ async function fetchMovie (movieName) {
 
 
 
-function disableButton (e) {
+function disableForm (e) {
 
-  e.target.setAttribute('disabled', true);
+  // Disable input but while keeping its value because it disappers with the disabled HTML attribute
+  e.target.firstElementChild.classList.toggle('search__box--disabled');
+  e.target.firstElementChild.setAttribute('disabled', true);
+  e.target.firstElementChild.setAttribute('value', e.target.value);
 
-  e.target.classList.toggle('btn--disabled');
+  // Disable submit button
+  e.target.lastElementChild.setAttribute('disabled', true);
+  e.target.lastElementChild.classList.toggle('btn--disabled');
 
   // Remove focus and active states that remain after the button is clicked
   e.target.blur();
-
 }
 
 
   
-function enableButton (e) {
-  e.target.classList.toggle('btn--disabled');
+function enableForm (e) {
+
+  // Enable input
+  e.target.firstElementChild.classList.toggle('search__box--disabled');
+  e.target.firstElementChild.removeAttribute('disabled');
+
+  // Enable submit button
+  e.target.lastElementChild.removeAttribute('disabled');
+  e.target.lastElementChild.classList.toggle('btn--disabled');
 }
 
 
 
-
-function showLoader () {
+function toggleLoader () {
   document.querySelector('.loader').classList.toggle('hidden');
 }
 
 
 
-document.querySelector('.btn--submit').addEventListener('click', (e) => {
+function showResults (searchResults) {
 
-  // Prevent the form from submitting, which creates issues when it's not the actual intention
+  // If movie not found
+
+  searchResults.Search.forEach((movie, index) => {
+
+    console.log(movie)
+    
+    document.querySelector('.search-results').insertAdjacentHTML('beforeend',
+    `<div class="card">
+      <figure class="card__figure">
+        <img class="card__image" src="${movie.Poster}" alt="${movie.Title} poster">
+      </figure>
+      <h2 class="card__title">${movie.Title}</h2>
+      <h3 class="card__year">${movie.Year}</h3>
+    </div>`);
+  });
+}
+
+
+
+document.querySelector('.search').addEventListener('submit', (e) => {
+
+  console.log('a')
   e.preventDefault();
 
-  let movieName = document.querySelector('.form__input').value;
+  let movieName = document.querySelector('.search__box').value;
 
-  disableButton(e);
+  disableForm(e);
 
-  showLoader();
+  toggleLoader();
 
   // Simulate delay for illustration purposes
   setTimeout(() => {
 
     fetchMovie(movieName)
-      .then((results) => {console.log(results)})
+      .then((searchResults) => {
+
+        showResults(searchResults);
+        toggleLoader();
+        enableForm(e);
+      })
       .catch((error) => console.log(error));
 
   }, 3000);
-
 });

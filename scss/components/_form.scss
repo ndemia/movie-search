@@ -1,11 +1,11 @@
 @use '../abstracts/' as *;
 
-.form {
+.search {
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  &__input {
+  &__box {
     width: 15rem;
     padding: 0.3rem 0.5rem;
     position: relative;
@@ -21,9 +21,13 @@
     background-position: 97% center;
 
     &:focus {
-      width: 20rem;
+      width: 18rem;
       background-color: var(--blue-gray-5);
       box-shadow: 0 3px 0 var(--neon-blue);
+    }
+
+    &--disabled {
+      cursor: not-allowed;
     }
   }
 }
