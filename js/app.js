@@ -44,7 +44,26 @@ function toggleLoader () {
 
 
 
-function showMovieNotFound () {
+function clearResultsSection () {
+
+  // Check if there are results present from a previous search, so to provide a clean state
+  // If it exists, save that NodeList of elements (each search result)
+  if (cards = document.querySelectorAll('.card')) {
+
+    // Iterate and remove all of them
+    cards.forEach((card) => card.remove());
+  }
+
+  // Check if the 'Movie not found' error from a previous search is present
+  // If it exists, remove
+  if (error = document.querySelector('.message--error')) {
+    error.remove();
+  }
+}
+
+
+
+function showError () {
   document.querySelector('.search-results').insertAdjacentHTML('beforeend', 
   `<div class="message message--error">
     <span class="icon icon--error"></span>
@@ -59,7 +78,7 @@ function showResults (searchResults) {
   // If no movie was found, show error
   if (searchResults.Response === "False") {
 
-    showMovieNotFound();
+    showError();
 
   } else {
 
@@ -83,13 +102,8 @@ document.querySelector('.search').addEventListener('submit', (e) => {
   // Don't want the form to submit
   e.preventDefault();
 
-  // Check if there are results present from a previous search, so to provide a clean state
-  // If exists, save that NodeList of elements (each search result)
-  if (cards = document.querySelectorAll('.card')) {
-
-    // Iterate and remove all of them
-    cards.forEach((card) => card.remove());
-  }
+  // Clear the section from any elements
+  clearResultsSection();
 
   // Save the name of the movie to search
   let movieName = document.querySelector('.search__box').value;
