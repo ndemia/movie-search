@@ -1,20 +1,29 @@
 .card {
   display: flex;
   flex-direction: column;
-  align-content: center;
+  align-items: center;
   padding: 1rem;
   border-radius: var(--br);
-  background-color: var(--gray-3);
+  background-image: linear-gradient(0deg, var(--blue-gray-4) 0%, var(--blue-gray-3) 100%);
+  box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.5);
 
-  &__image {
-
+  &__figure {
+    width: 75%;
+    border-radius: 2px;
+    border: 5px solid var(--blue-gray-7);
+    margin-bottom: 0.5rem;
   }
 
   &__title {
-    color: var(--neon-blue-dark);
+    font-size: 1rem;
+    text-align: center;
+    line-height: 1.25;
+    color: var(--gray-2);
   }
 
   &__year {
-    color: var(--neon-blue-darkest)
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--gray-4)
   }
 }

@@ -62,7 +62,7 @@ function showResults (searchResults) {
       <figure class="card__figure">
         <img class="card__image" src="${movie.Poster}" alt="${movie.Title} poster">
       </figure>
-      <h2 class="card__title">${movie.Title}</h2>
+      <h2 class="card__title" title="${movie.Title}">${movie.Title}</h2>
       <h3 class="card__year">${movie.Year}</h3>
     </div>`);
   });
