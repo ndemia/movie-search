@@ -39,25 +39,41 @@ function enableForm (e) {
 
 // Show and hide the loader
 function toggleLoader () {
-  document.querySelector('.loader').classList.toggle('hidden');
+  document.querySelector('.icon--loader').classList.toggle('hidden');
+}
+
+
+
+function showMovieNotFound () {
+  document.querySelector('.search-results').insertAdjacentHTML('beforeend', 
+  `<div class="message message--error">
+    <span class="icon icon--error"></span>
+    <p class="message__test">Movie not found :(</p>
+  </div>`);
 }
 
 
 
 function showResults (searchResults) {
 
-  console.log(searchResults)
+  // If no movie was found, show error
+  if (searchResults.Response === "False") {
 
-  searchResults.Search.forEach((movie, index) => {    
-    document.querySelector('.search-results').insertAdjacentHTML('beforeend',
-    `<div class="card">
-      <figure class="card__figure">
-        <img class="card__image" src="${movie.Poster}" alt="${movie.Title} poster">
-      </figure>
-      <h2 class="card__title" title="${movie.Title}">${movie.Title}</h2>
-      <h3 class="card__year">${movie.Year}</h3>
-    </div>`);
-  });
+    showMovieNotFound();
+
+  } else {
+
+    searchResults.Search.forEach((movie, index) => {    
+      document.querySelector('.search-results').insertAdjacentHTML('beforeend',
+      `<div class="card">
+        <figure class="card__figure">
+          <img class="card__image" src="${movie.Poster}" alt="${movie.Title} poster">
+        </figure>
+        <h2 class="card__title" title="${movie.Title}">${movie.Title}</h2>
+        <h3 class="card__year">${movie.Year}</h3>
+      </div>`);
+    });
+  }
 }
 
 
@@ -89,7 +105,6 @@ document.querySelector('.search').addEventListener('submit', (e) => {
 
     fetchMovie(movieName)
       .then((searchResults) => {
-
         showResults(searchResults);
         toggleLoader();
         enableForm(e);

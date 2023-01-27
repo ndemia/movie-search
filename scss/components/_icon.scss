@@ -1,0 +1,31 @@
+.icon {
+  display: block;
+  height: 96px;
+  width: 96px;
+  margin-top: 2rem;
+  
+  &--loader {
+    background-image: url(../../assets/images/reel.svg);
+    animation-name: spin;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  &--error {
+    background-image: url(../../assets/images/barrier.svg);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
