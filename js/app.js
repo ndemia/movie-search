@@ -1,15 +1,11 @@
-async function fetchMovie (movieName) {
-
-  const response = await fetch(`/.netlify/functions/fetch-movie?s=${movieName}`);
+async function fetchMovie(movieName) {
+  const page = 1;
+  const response = await fetch(`./.netlify/functions/fetch-movie?s=${movieName}&page=${page}`);
   const movieSearchResults = await response.json();
   return movieSearchResults;
+}
 
-};
-
-
-
-function disableForm (e) {
-
+function disableForm(e) {
   // Disable input but while keeping its value because it disappers with the disabled HTML attribute
   e.target.firstElementChild.classList.toggle('search__box--disabled');
   e.target.firstElementChild.setAttribute('disabled', true);
@@ -23,10 +19,7 @@ function disableForm (e) {
   e.target.blur();
 }
 
-
-  
-function enableForm (e) {
-
+function enableForm(e) {
   // Enable input
   e.target.firstElementChild.classList.toggle('search__box--disabled');
   e.target.firstElementChild.removeAttribute('disabled');
@@ -36,69 +29,58 @@ function enableForm (e) {
   e.target.lastElementChild.classList.toggle('btn--disabled');
 }
 
-
 // Show and hide the loader
-function toggleLoader () {
+function toggleLoader() {
   document.querySelector('.icon--loader').classList.toggle('hidden');
 }
 
-
-
-function clearResultsSection () {
-
+function clearResultsSection() {
   // Check if there are results present from a previous search, so to provide a clean state
   // If it exists, save that NodeList of elements (each search result)
-  if (cards = document.querySelectorAll('.card')) {
-
+  if ((cards = document.querySelectorAll('.card'))) {
     // Iterate and remove all of them
     cards.forEach((card) => card.remove());
   }
 
   // Check if the 'Movie not found' error from a previous search is present
   // If it exists, remove
-  if (error = document.querySelector('.message--error')) {
+  if ((error = document.querySelector('.message--error'))) {
     error.remove();
   }
 }
 
-
-
-function showError () {
-  document.querySelector('.search-results').insertAdjacentHTML('beforeend', 
-  `<div class="message message--error">
+function showError() {
+  document.querySelector('.search-results').insertAdjacentHTML(
+    'beforeend',
+    `<div class="message message--error">
     <span class="icon icon--error"></span>
     <p class="message__test">Movie not found :(</p>
-  </div>`);
+  </div>`
+  );
 }
 
-
-
-function showResults (searchResults) {
-
+function showResults(searchResults) {
   // If no movie was found, show error
-  if (searchResults.Response === "False") {
-
+  if (searchResults.Response === 'False') {
     showError();
-
   } else {
-
-    searchResults.Search.forEach((movie, index) => {    
-      document.querySelector('.search-results').insertAdjacentHTML('beforeend',
-      `<div class="card">
+    searchResults.Search.forEach((movie, index) => {
+      document.querySelector('.search-results').insertAdjacentHTML(
+        'beforeend',
+        `<div class="card">
         <figure class="card__figure">
           <img class="card__image" src="${movie.Poster}" alt="${movie.Title} poster">
         </figure>
         <h2 class="card__title" title="${movie.Title}">${movie.Title}</h2>
         <h3 class="card__year">${movie.Year}</h3>
-      </div>`);
+      </div>`
+      );
     });
   }
 }
 
-
 // Search action
 document.querySelector('.search').addEventListener('submit', (e) => {
-
   // Don't want the form to submit
   e.preventDefault();
 
@@ -116,14 +98,12 @@ document.querySelector('.search').addEventListener('submit', (e) => {
 
   // Simulate delay for illustration purposes
   setTimeout(() => {
-
     fetchMovie(movieName)
       .then((searchResults) => {
         showResults(searchResults);
         toggleLoader();
         enableForm(e);
       })
-      .catch((error) => console.log(error));
-
+      .catch((error) => console.log(error.message));
   }, 3000);
 });

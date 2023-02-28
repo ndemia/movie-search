@@ -1,10 +1,11 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-const handler = async (event) => {
-
+export const handler = async (event) => {
   const movieName = event.queryStringParameters.s;
+  const currentPage = event.queryStringParameters.page;
+
   const API_KEY = process.env.API_KEY;
-  const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}&type=movie`;
+  const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}&type=movie&=page${currentPage}`;
 
   try {
     let response = await fetch(URL);
@@ -12,15 +13,12 @@ const handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify(movieSearchResults)
+      body: JSON.stringify(movieSearchResults),
     };
-    
   } catch (error) {
     return {
       statusCode: 500,
-      body: error.toString()
+      body: error.toString(),
     };
-  };
+  }
 };
-
-module.exports = { handler }
