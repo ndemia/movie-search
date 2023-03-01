@@ -1,9 +1,15 @@
 .search-results {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
-  align-items: start;
-  gap: 1.5rem;
   padding: 2rem 1rem;
+}
+
+.search-results-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }

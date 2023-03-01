@@ -2,16 +2,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-basis: 16rem;
+  flex-grow: 1;
   padding: 1rem;
   border-radius: var(--br);
   background-image: linear-gradient(0deg, var(--blue-gray-4) 0%, var(--blue-gray-3) 100%);
   box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.5);
 
   &__figure {
-    width: 75%;
     border-radius: 2px;
     border: 5px solid var(--blue-gray-7);
     margin-bottom: 1rem;
+  }
+
+  &__image {
+    max-height: 25rem;
   }
 
   &__title {
@@ -24,6 +29,6 @@
   &__year {
     font-size: 1rem;
     font-weight: 400;
-    color: var(--gray-4)
+    color: var(--gray-4);
   }
 }

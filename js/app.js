@@ -50,7 +50,7 @@ function clearResultsSection() {
 }
 
 function showError() {
-  document.querySelector('.search-results').insertAdjacentHTML(
+  document.querySelector('.search-results-container').insertAdjacentHTML(
     'beforeend',
     `<div class="message message--error">
     <span class="icon icon--error"></span>
@@ -64,8 +64,9 @@ function showResults(searchResults) {
   if (searchResults.Response === 'False') {
     showError();
   } else {
-    searchResults.Search.forEach((movie, index) => {
-      document.querySelector('.search-results').insertAdjacentHTML(
+    // Show the results
+    searchResults.Search.forEach((movie) => {
+      document.querySelector('.search-results-container').insertAdjacentHTML(
         'beforeend',
         `<div class="card">
         <figure class="card__figure">
@@ -79,13 +80,45 @@ function showResults(searchResults) {
   }
 }
 
+function showPagination(results) {
+  const resultsShown = results.Search.length;
+  const totalPages = Math.ceil(results.totalResults / 10);
+  let currentPage = 1;
+
+  // Show pagination at the top and at the bottom
+  document
+    .querySelector('.search-results')
+    .insertAdjacentHTML(
+      'afterbegin',
+      `<div class="pagination"><span class="pagination__text">Showing ${resultsShown} of ${results.totalResults} results</span></div>`
+    );
+  document
+    .querySelector('.search-results')
+    .insertAdjacentHTML(
+      'beforeend',
+      `<div class="pagination"><span pagination__text>Showing ${resultsShown} of ${results.totalResults} results</span></div>`
+    );
+
+  // Create pagination container for the numbers
+  document.querySelector('.pagination').insertAdjacentHTML('beforeend', `<div class="pagination__numbers"></div>`);
+
+  for (let i = 1; i <= totalPages; i++) {
+    document.querySelector('.pagination__numbers').insertAdjacentHTML('beforeend', `<button class="btn btn--pagination">${i}</button>`);
+  }
+}
+
+function removePagination() {
+  document.querySelectorAll('.pagination').forEach((element) => element.remove());
+}
+
 // Search action
 document.querySelector('.search').addEventListener('submit', (e) => {
   // Don't want the form to submit
   e.preventDefault();
 
-  // Clear the section from any elements
+  // Clear the section from any previous elements
   clearResultsSection();
+  removePagination();
 
   // Save the name of the movie to search
   let movieName = document.querySelector('.search__box').value;
@@ -101,6 +134,7 @@ document.querySelector('.search').addEventListener('submit', (e) => {
     fetchMovie(movieName)
       .then((searchResults) => {
         showResults(searchResults);
+        showPagination(searchResults);
         toggleLoader();
         enableForm(e);
       })

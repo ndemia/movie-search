@@ -1,0 +1,15 @@
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.pagination__numbers {
+}
+
+.pagination__number {
+  margin: 0 0.25rem;
+  padding: 0 0.25rem;
+}
