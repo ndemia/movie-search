@@ -9,30 +9,52 @@
 
   &--primary {
     background-color: var(--neon-blue);
-    color: var(--white);
+    color: var(--blue-gray-01);
 
     &:hover,
     &:focus {
       background-color: var(--neon-blue-dark);
       box-shadow: inset 0 2px 0 var(--neon-blue-dark), 0 2px 5px hsla(0, 0%, 0%, 0.5);
-      color: var(--gray-3);
+      color: var(--blue-gray-03);
     }
 
     &:active {
       background-color: var(--neon-blue-darkest);
       box-shadow: none;
-      color: var(--gray-5);
+      color: var(--blue-gray-03);
     }
   }
 
   &--disabled {
     cursor: not-allowed;
-    background-color: var(--gray-5);
-    color: var(--gray-9);
+    background-color: var(--blue-gray-05);
+    color: var(--blue-gray-09);
     box-shadow: none;
   }
 
   &--pagination {
-    box-shadow: inset 0 2px 0 var(--gray-08), 0 2px 5px hsla(0, 0%, 0%, 0.5%);
+    min-width: 1.8rem;
+    padding: 0.4rem 0.3rem;
+    box-shadow: none;
+    border-radius: 0;
+    background-color: transparent;
+    color: var(--blue-gray-05);
+    font-weight: 300;
+    border-inline-start: 1px solid var(--blue-gray-05);
+
+    &:first-child {
+      border: none;
+    }
+
+    &:hover,
+    &:focus {
+      background-color: var(--blue-gray-04);
+      color: var(--blue-gray-09);
+    }
+
+    &--active {
+      background-color: var(--blue-gray-04);
+      color: var(--blue-gray-09);
+    }
   }
 }

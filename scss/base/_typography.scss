@@ -1,4 +1,19 @@
 // @use '../abstracts/variables' as *;
+@font-face {
+  font-family: 'Rubik';
+  src: url('../../assets/fonts/rubik/Rubik-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  src: url('../../assets/fonts/rubik/Rubik-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Rubik';

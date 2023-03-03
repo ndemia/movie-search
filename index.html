@@ -16,7 +16,8 @@
     <section class="header">
       <h1 class="title">Movie search</h1>
       <form method="get" action="/search/" class="search">
-        <input type="text" class="search__box" required="true">
+        <label for="search-box" hidden>Search movie</label>
+        <input id="search-box" type="text" class="search__box" required="true">
         <input type="submit" value="Search" class="btn btn--primary btn--submit"></input>
       </form>
     </section>

@@ -6,12 +6,12 @@
   flex-grow: 1;
   padding: 1rem;
   border-radius: var(--br);
-  background-image: linear-gradient(0deg, var(--blue-gray-4) 0%, var(--blue-gray-3) 100%);
+  background-image: linear-gradient(0deg, var(--blue-gray-06) 0%, var(--blue-gray-04) 100%);
   box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.5);
 
   &__figure {
     border-radius: 2px;
-    border: 5px solid var(--blue-gray-7);
+    border: 5px solid var(--blue-gray-07);
     margin-bottom: 1rem;
   }
 
@@ -23,12 +23,12 @@
     font-size: 1rem;
     text-align: center;
     line-height: 1.25;
-    color: var(--gray-2);
+    color: var(--gray-02);
   }
 
   &__year {
     font-size: 1rem;
     font-weight: 400;
-    color: var(--gray-4);
+    color: var(--gray-04);
   }
 }

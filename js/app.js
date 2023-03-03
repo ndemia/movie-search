@@ -1,32 +1,37 @@
-async function fetchMovie(movieName) {
-  const page = 1;
-  const response = await fetch(`./.netlify/functions/fetch-movie?s=${movieName}&page=${page}`);
+async function fetchMovie(movieName, pageNumber = 1) {
+  const response = await fetch(`./.netlify/functions/fetch-movie?s=${movieName}&page=${pageNumber}`);
   const movieSearchResults = await response.json();
   return movieSearchResults;
 }
 
-function disableForm(e) {
+function disableForm() {
+  let formInput = document.querySelector('.search__box');
+  let submitButton = document.querySelector('.btn--submit');
+
   // Disable input but while keeping its value because it disappers with the disabled HTML attribute
-  e.target.firstElementChild.classList.toggle('search__box--disabled');
-  e.target.firstElementChild.setAttribute('disabled', true);
-  e.target.firstElementChild.setAttribute('value', e.target.value);
+  formInput.classList.toggle('search__box--disabled');
+  formInput.setAttribute('disabled', true);
+  formInput.setAttribute('value', formInput.value);
 
   // Disable submit button
-  e.target.lastElementChild.setAttribute('disabled', true);
-  e.target.lastElementChild.classList.toggle('btn--disabled');
+  submitButton.setAttribute('disabled', true);
+  submitButton.classList.toggle('btn--disabled');
 
   // Remove focus and active states that remain after the button is clicked
-  e.target.blur();
+  submitButton.blur();
 }
 
-function enableForm(e) {
+function enableForm() {
+  let formInput = document.querySelector('.search__box');
+  let submitButton = document.querySelector('.btn--submit');
+
   // Enable input
-  e.target.firstElementChild.classList.toggle('search__box--disabled');
-  e.target.firstElementChild.removeAttribute('disabled');
+  formInput.classList.toggle('search__box--disabled');
+  formInput.removeAttribute('disabled');
 
   // Enable submit button
-  e.target.lastElementChild.removeAttribute('disabled');
-  e.target.lastElementChild.classList.toggle('btn--disabled');
+  submitButton.removeAttribute('disabled');
+  submitButton.classList.toggle('btn--disabled');
 }
 
 // Show and hide the loader
@@ -80,12 +85,12 @@ function showResults(searchResults) {
   }
 }
 
-function showPagination(results) {
+function showPagination(results, movie, pageNumber) {
   const resultsShown = results.Search.length;
-  const totalPages = Math.ceil(results.totalResults / 10);
-  let currentPage = 1;
+  const totalPagesNumber = Math.ceil(results.totalResults / 10);
+  let totalPagesArray = [];
 
-  // Show pagination at the top and at the bottom
+  // Show pagination container at the top and at the bottom
   document
     .querySelector('.search-results')
     .insertAdjacentHTML(
@@ -96,48 +101,101 @@ function showPagination(results) {
     .querySelector('.search-results')
     .insertAdjacentHTML(
       'beforeend',
-      `<div class="pagination"><span pagination__text>Showing ${resultsShown} of ${results.totalResults} results</span></div>`
+      `<div class="pagination"><span class="pagination__text">Showing ${resultsShown} of ${results.totalResults} results</span></div>`
     );
 
   // Create pagination container for the numbers
-  document.querySelector('.pagination').insertAdjacentHTML('beforeend', `<div class="pagination__numbers"></div>`);
+  document.querySelectorAll('.pagination').forEach((element) => {
+    element.insertAdjacentHTML('beforeend', `<div class="pagination__numbers"></div>`);
+  });
 
-  for (let i = 1; i <= totalPages; i++) {
-    document.querySelector('.pagination__numbers').insertAdjacentHTML('beforeend', `<button class="btn btn--pagination">${i}</button>`);
+  // Show the page numbers
+  // document.querySelectorAll('.pagination__numbers').forEach((element) => {
+  //   for (let i = 1; i <= totalPagesNumber; i++) {
+  //     element.insertAdjacentHTML('beforeend', `<button data-page="${i}" class="btn btn--pagination">${i}</button>`);
+  //   }
+  // });
+
+  // Create array of total pages
+  for (let i = 1; i <= totalPagesNumber; i++) {
+    totalPagesArray.push(i);
   }
+
+  // If less than 6 pages, show the entire array as buttons
+  if (totalPagesArray.length <= 6) {
+    for (let i = 1; i <= totalPagesArray.length; i++) {
+      document.querySelectorAll('.pagination__numbers').forEach((element) => {
+        element.insertAdjacentHTML('beforeend', `<button data-page="${i}" class="btn btn--pagination">${i}</button>`);
+      });
+    }
+  } else {
+    let leftSidePagination = totalPagesArray.slice(0, 3);
+    let rightSidePagination = totalPagesArray.slice(Math.max(totalPagesArray.length - 3, 0));
+    let finalPagination = leftSidePagination.concat(rightSidePagination);
+
+    document.querySelectorAll('.pagination__numbers').forEach((element) => {
+      for (let i = 0; i < finalPagination.length; i++) {
+        element.insertAdjacentHTML(
+          'beforeend',
+          `<button data-page="${finalPagination[i]}" class="btn btn--pagination">${finalPagination[i]}</button>`
+        );
+      }
+    });
+
+    console.log('left', leftSidePagination);
+    console.log('right', rightSidePagination);
+    console.log(finalPagination);
+  }
+
+  // Show current page as active
+  document.querySelectorAll(`[data-page="${pageNumber}"]`).forEach((button) => {
+    button.classList.add('btn--pagination--active');
+  });
+
+  // Add functionality to buttons
+  document.querySelectorAll('.btn--pagination').forEach((button) => {
+    // Store the number of the button to indicate the page of results to fetch
+    const pageNumber = Number(button.dataset.page);
+
+    button.addEventListener('click', () => {
+      searchMovie(movie, pageNumber);
+    });
+  });
 }
 
 function removePagination() {
   document.querySelectorAll('.pagination').forEach((element) => element.remove());
 }
 
-// Search action
-document.querySelector('.search').addEventListener('submit', (e) => {
-  // Don't want the form to submit
-  e.preventDefault();
-
+function searchMovie(movieName = '', pageNumber = 1) {
   // Clear the section from any previous elements
   clearResultsSection();
   removePagination();
 
   // Save the name of the movie to search
-  let movieName = document.querySelector('.search__box').value;
+  movieName = document.querySelector('.search__box').value;
 
   // Disable the form while searching, using the event as parameter
-  disableForm(e);
+  disableForm();
 
   // Show loader while searching
   toggleLoader();
 
   // Simulate delay for illustration purposes
   setTimeout(() => {
-    fetchMovie(movieName)
+    fetchMovie(movieName, pageNumber)
       .then((searchResults) => {
         showResults(searchResults);
-        showPagination(searchResults);
+        showPagination(searchResults, movieName, pageNumber);
         toggleLoader();
-        enableForm(e);
+        enableForm();
       })
       .catch((error) => console.log(error.message));
   }, 3000);
+}
+
+document.querySelector('.search').addEventListener('submit', (e) => {
+  // Don't want the form to submit
+  e.preventDefault();
+  searchMovie();
 });

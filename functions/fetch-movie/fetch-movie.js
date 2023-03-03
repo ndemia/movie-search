@@ -2,10 +2,10 @@ import fetch from 'node-fetch';
 
 export const handler = async (event) => {
   const movieName = event.queryStringParameters.s;
-  const currentPage = event.queryStringParameters.page;
+  const pageNumber = event.queryStringParameters.page;
 
   const API_KEY = process.env.API_KEY;
-  const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}&type=movie&=page${currentPage}`;
+  const URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${movieName}&type=movie&page=${pageNumber}`;
 
   try {
     let response = await fetch(URL);

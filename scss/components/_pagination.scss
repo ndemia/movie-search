@@ -2,14 +2,21 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   padding: 1rem;
 }
 
-.pagination__numbers {
+.pagination__text {
+  color: var(--blue-gray-05);
+  font-weight: 300;
 }
 
-.pagination__number {
-  margin: 0 0.25rem;
-  padding: 0 0.25rem;
+.pagination__numbers {
+  border: 1px solid var(--blue-gray-05);
+  border-radius: 2px;
+}
+
+.pagination .btn--pagination {
+  //margin: 0 0.25rem;
 }
