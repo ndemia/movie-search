@@ -69,13 +69,18 @@ function showResults(searchResults) {
   if (searchResults.Response === 'False') {
     showError();
   } else {
-    // Show the results
     searchResults.Search.forEach((movie) => {
+      let moviePoster = movie.Poster;
+
+      if (movie.Poster === 'N/A') {
+        moviePoster = 'assets/images/404.jpg';
+      }
+
       document.querySelector('.search-results-container').insertAdjacentHTML(
         'beforeend',
         `<div class="card">
         <figure class="card__figure">
-          <img class="card__image" src="${movie.Poster}" alt="${movie.Title} poster">
+          <img class="card__image" src="${moviePoster}" alt="${movie.Title} movie poster">
         </figure>
         <div class="card__info">
           <h2 class="card__title" title="${movie.Title}">${movie.Title}</h2>
