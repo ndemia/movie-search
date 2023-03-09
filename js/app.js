@@ -86,22 +86,67 @@ function showResults(searchResults) {
 }
 
 function showPagination(results, movie, pageNumber) {
-  const resultsShown = results.Search.length;
   const totalPagesNumber = Math.ceil(results.totalResults / 10);
-  let totalPagesArray = [];
+
+  // Return the total number of pages as an array
+  const getRange = (start, end) => {
+    return Array(end - start + 1)
+      .fill()
+      .map((v, i) => i + start);
+  };
+
+  const pagination = (currentPage, pageCount = totalPagesNumber) => {
+    let delta;
+
+    if (pageCount <= 7) {
+      // delta === 7: [1 2 3 4 5 6]
+      delta = 7;
+    } else {
+      // delta === 2: [1 ... 4 5 6 ... 10]
+      // delta === 4: [1 2 3 4 5 ... 10]
+      delta = currentPage > 4 && currentPage < pageCount - 3 ? 2 : 4;
+    }
+
+    const range = {
+      start: Math.round(currentPage - delta / 2),
+      end: Math.round(currentPage + delta / 2),
+    };
+
+    if (range.start - 1 === 1 || range.end + 1 === pageCount) {
+      range.start += 1;
+      range.end += 1;
+    }
+
+    let pages =
+      currentPage > delta
+        ? getRange(Math.min(range.start, pageCount - delta), Math.min(range.end, pageCount))
+        : getRange(1, Math.min(pageCount, delta + 1));
+
+    const withDots = (value, pair) => (pages.length + 1 !== pageCount ? pair : [value]);
+
+    if (pages[0] !== 1) {
+      pages = withDots(1, [1, '...']).concat(pages);
+    }
+
+    if (pages[pages.length - 1] < pageCount) {
+      pages = pages.concat(withDots(pageCount, ['...', pageCount]));
+    }
+
+    return pages;
+  };
 
   // Show pagination container at the top and at the bottom
   document
     .querySelector('.search-results')
     .insertAdjacentHTML(
       'afterbegin',
-      `<div class="pagination"><span class="pagination__text">Showing ${resultsShown} of ${results.totalResults} results</span></div>`
+      `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`
     );
   document
     .querySelector('.search-results')
     .insertAdjacentHTML(
       'beforeend',
-      `<div class="pagination"><span class="pagination__text">Showing ${resultsShown} of ${results.totalResults} results</span></div>`
+      `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`
     );
 
   // Create pagination container for the numbers
@@ -109,43 +154,14 @@ function showPagination(results, movie, pageNumber) {
     element.insertAdjacentHTML('beforeend', `<div class="pagination__numbers"></div>`);
   });
 
-  // Show the page numbers
-  // document.querySelectorAll('.pagination__numbers').forEach((element) => {
-  //   for (let i = 1; i <= totalPagesNumber; i++) {
-  //     element.insertAdjacentHTML('beforeend', `<button data-page="${i}" class="btn btn--pagination">${i}</button>`);
-  //   }
-  // });
+  //Show the page numbers
+  document.querySelectorAll('.pagination__numbers').forEach((element) => {
+    const pages = pagination(pageNumber, totalPagesNumber);
 
-  // Create array of total pages
-  for (let i = 1; i <= totalPagesNumber; i++) {
-    totalPagesArray.push(i);
-  }
-
-  // If less than 6 pages, show the entire array as buttons
-  if (totalPagesArray.length <= 6) {
-    for (let i = 1; i <= totalPagesArray.length; i++) {
-      document.querySelectorAll('.pagination__numbers').forEach((element) => {
-        element.insertAdjacentHTML('beforeend', `<button data-page="${i}" class="btn btn--pagination">${i}</button>`);
-      });
-    }
-  } else {
-    let leftSidePagination = totalPagesArray.slice(0, 3);
-    let rightSidePagination = totalPagesArray.slice(Math.max(totalPagesArray.length - 3, 0));
-    let finalPagination = leftSidePagination.concat(rightSidePagination);
-
-    document.querySelectorAll('.pagination__numbers').forEach((element) => {
-      for (let i = 0; i < finalPagination.length; i++) {
-        element.insertAdjacentHTML(
-          'beforeend',
-          `<button data-page="${finalPagination[i]}" class="btn btn--pagination">${finalPagination[i]}</button>`
-        );
-      }
+    pages.forEach((page) => {
+      element.insertAdjacentHTML('beforeend', `<button data-page="${page}" class="btn btn--pagination">${page}</button>`);
     });
-
-    console.log('left', leftSidePagination);
-    console.log('right', rightSidePagination);
-    console.log(finalPagination);
-  }
+  });
 
   // Show current page as active
   document.querySelectorAll(`[data-page="${pageNumber}"]`).forEach((button) => {
@@ -154,12 +170,15 @@ function showPagination(results, movie, pageNumber) {
 
   // Add functionality to buttons
   document.querySelectorAll('.btn--pagination').forEach((button) => {
-    // Store the number of the button to indicate the page of results to fetch
+    // Store the number of the button to indicate the page of results to fetch function
     const pageNumber = Number(button.dataset.page);
 
-    button.addEventListener('click', () => {
-      searchMovie(movie, pageNumber);
-    });
+    // If button has dots, do not add functionality
+    if (button.dataset.page !== '...') {
+      button.addEventListener('click', () => {
+        searchMovie(movie, pageNumber);
+      });
+    }
   });
 }
 
