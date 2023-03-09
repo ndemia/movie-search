@@ -1,4 +1,5 @@
 # Movie search (Failed interview ~~test~~, volume 3)
+![picture](https://raw.githubusercontent.com/ndemia/demia.me/main/assets/images/interview03.png)
 
 I applied for a position at a company I was dying to work for. This time around, I ___did___ manage to pass the technical assessment, with some good parts and some bad parts, of course. In the end, I didn't pass the penultimate interview. So, so close.
 
