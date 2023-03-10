@@ -211,6 +211,7 @@ function searchMovie(movieName = '', pageNumber = 1) {
   setTimeout(() => {
     fetchMovie(movieName, pageNumber)
       .then((searchResults) => {
+        console.log(searchResults);
         showResults(searchResults);
         showPagination(searchResults, movieName, pageNumber);
         toggleLoader();
