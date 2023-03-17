@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,23 +39,27 @@ function enableForm() {
 }
 // Show and hide the loader
 function toggleLoader() {
-    document.querySelector('.icon--loader').classList.toggle('hidden');
+    const loader = document.querySelector('.icon--loader');
+    loader.classList.toggle('hidden');
 }
 function clearResultsSection() {
+    const cards = document.querySelectorAll('.card');
+    const error = document.querySelector('.message--error');
     // Check if there are results present from a previous search, so to provide a clean state
     // If it exists, save that NodeList of elements (each search result)
-    if ((cards = document.querySelectorAll('.card'))) {
+    if (cards) {
         // Iterate and remove all of them
         cards.forEach((card) => card.remove());
     }
     // Check if the 'Movie not found' error from a previous search is present
     // If it exists, remove
-    if ((error = document.querySelector('.message--error'))) {
+    if (error) {
         error.remove();
     }
 }
 function showError() {
-    document.querySelector('.search-results-container').insertAdjacentHTML('beforeend', `<div class="message message--error">
+    const searchResultsContainer = document.querySelector('.search-results-container');
+    searchResultsContainer.insertAdjacentHTML('beforeend', `<div class="message message--error">
     <span class="icon icon--error"></span>
     <p class="message__test">Movie not found :(</p>
   </div>`);
@@ -67,30 +70,33 @@ function showResults(searchResults) {
         showError();
     }
     else {
-        searchResults.Search.forEach((movie) => {
-            let moviePoster = movie.Poster;
-            if (movie.Poster === 'N/A') {
+        // Show the movies
+        searchResults.Search.forEach((movieResult) => {
+            const searchResultsContainer = document.querySelector('.search-results-container');
+            let moviePoster = movieResult.Poster;
+            if (movieResult.Poster === 'N/A') {
                 moviePoster = 'assets/images/404.jpg';
             }
-            document.querySelector('.search-results-container').insertAdjacentHTML('beforeend', `<div class="card">
+            searchResultsContainer.insertAdjacentHTML('beforeend', `<div class="card">
         <figure class="card__figure">
-          <img class="card__image" src="${moviePoster}" alt="${movie.Title} movie poster">
+          <img class="card__image" src="${moviePoster}" alt="${movieResult.Title} movie poster">
         </figure>
         <div class="card__info">
-          <h2 class="card__title" title="${movie.Title}">${movie.Title}</h2>
-          <h3 class="card__year">${movie.Year}</h3>
+          <h2 class="card__title" title="${movieResult.Title}">${movieResult.Title}</h2>
+          <h3 class="card__year">${movieResult.Year}</h3>
         </div>
       </div>`);
         });
     }
 }
 function showPagination(results, movie, pageNumber) {
+    // Calculate the total amount of pages according the the amount of movies shown per page
     const totalPagesNumber = Math.ceil(results.totalResults / 10);
-    // Return the total number of pages as an array
+    // Save the total number of pages as the length of the array
     const getRange = (start, end) => {
         return Array(end - start + 1)
-            .fill()
-            .map((v, i) => i + start);
+            .fill(undefined)
+            .map((value, index) => index + start);
     };
     const pagination = (currentPage, pageCount = totalPagesNumber) => {
         let delta;
@@ -114,7 +120,9 @@ function showPagination(results, movie, pageNumber) {
         let pages = currentPage > delta
             ? getRange(Math.min(range.start, pageCount - delta), Math.min(range.end, pageCount))
             : getRange(1, Math.min(pageCount, delta + 1));
-        const withDots = (value, pair) => (pages.length + 1 !== pageCount ? pair : [value]);
+        const withDots = (value, pair) => {
+            return pages.length + 1 !== pageCount ? pair : [value];
+        };
         if (pages[0] !== 1) {
             pages = withDots(1, [1, '...']).concat(pages);
         }
@@ -124,12 +132,9 @@ function showPagination(results, movie, pageNumber) {
         return pages;
     };
     // Show pagination container at the top and at the bottom
-    document
-        .querySelector('.search-results')
-        .insertAdjacentHTML('afterbegin', `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`);
-    document
-        .querySelector('.search-results')
-        .insertAdjacentHTML('beforeend', `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`);
+    const searchResults = document.querySelector('.search-results');
+    searchResults.insertAdjacentHTML('afterbegin', `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`);
+    searchResults.insertAdjacentHTML('beforeend', `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`);
     // Create pagination container for the numbers
     document.querySelectorAll('.pagination').forEach((element) => {
         element.insertAdjacentHTML('beforeend', `<div class="pagination__numbers"></div>`);
@@ -146,7 +151,8 @@ function showPagination(results, movie, pageNumber) {
         button.classList.add('btn--pagination--active');
     });
     // Add functionality to buttons
-    document.querySelectorAll('.btn--pagination').forEach((button) => {
+    const paginationButtons = document.querySelectorAll('.btn--pagination');
+    paginationButtons.forEach((button) => {
         // Store the number of the button to indicate the page of results to fetch function
         const pageNumber = Number(button.dataset.page);
         // If button has dots, do not add functionality
@@ -161,11 +167,12 @@ function removePagination() {
     document.querySelectorAll('.pagination').forEach((element) => element.remove());
 }
 function searchMovie(movieName = '', pageNumber = 1) {
+    const searchBox = document.querySelector('.search__box');
     // Clear the section from any previous elements
     clearResultsSection();
     removePagination();
     // Save the name of the movie to search
-    movieName = document.querySelector('.search__box').value;
+    movieName = searchBox.value;
     // Disable the form while searching, using the event as parameter
     disableForm();
     // Show loader while searching
@@ -174,7 +181,6 @@ function searchMovie(movieName = '', pageNumber = 1) {
     setTimeout(() => {
         fetchMovie(movieName, pageNumber)
             .then((searchResults) => {
-            console.log(searchResults);
             showResults(searchResults);
             showPagination(searchResults, movieName, pageNumber);
             toggleLoader();
@@ -183,8 +189,10 @@ function searchMovie(movieName = '', pageNumber = 1) {
             .catch((error) => console.log(error.message));
     }, 3000);
 }
-document.querySelector('.search').addEventListener('submit', (e) => {
+const searchForm = document.querySelector('.search');
+searchForm.addEventListener('submit', (e) => {
     // Don't want the form to submit
     e.preventDefault();
     searchMovie();
 });
+export {};
