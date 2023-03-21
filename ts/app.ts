@@ -1,14 +1,55 @@
 import { searchResults, movieResult } from './types.js';
 
+// UI
+const searchForm = document.querySelector('.search') as HTMLFormElement;
+
+// Functionality
+searchForm.addEventListener('submit', (e) => {
+
+  // Don't want the form to submit
+  e.preventDefault();
+  searchMovie();
+});
+
+// Function declarations
+function searchMovie(movieName = '', pageNumber = 1) {
+  const searchBox = document.querySelector('.search__box') as HTMLInputElement;
+
+  // Clear the section from any previous elements
+  clearResultsSection();
+  removePagination();
+
+  // Save the name of the movie to search
+  movieName = searchBox.value;
+
+  // Disable the form while searching, using the event as parameter
+  disableForm();
+
+  // Show loader while searching
+  toggleLoader();
+
+  // Simulate delay to allow the loading illustration to show
+  setTimeout(() => {
+    fetchMovie(movieName, pageNumber)
+      .then((searchResults) => {
+        showResults(searchResults);
+        showPagination(searchResults, movieName, pageNumber);
+        toggleLoader();
+        enableForm();
+      })
+      .catch((error) => console.log(error.message));
+  }, 3000);
+}
+
 async function fetchMovie(movieName: string, pageNumber = 1) {
   const response = await fetch(`./.netlify/functions/fetch-movie?s=${movieName}&page=${pageNumber}`);
   const movieSearchResults = await response.json();
   return movieSearchResults;
 }
 
-function disableForm() {
-  let formInput = document.querySelector('.search__box') as HTMLInputElement;
-  let submitButton = document.querySelector('.btn--submit') as HTMLButtonElement;
+function disableForm(): void {
+  const formInput = document.querySelector('.search__box') as HTMLInputElement;
+  const submitButton = document.querySelector('.btn--submit') as HTMLButtonElement;
 
   // Disable input but while keeping its value because it disappers with the disabled HTML attribute
   formInput.classList.toggle('search__box--disabled');
@@ -23,9 +64,9 @@ function disableForm() {
   submitButton.blur();
 }
 
-function enableForm() {
-  let formInput = document.querySelector('.search__box') as HTMLInputElement;
-  let submitButton = document.querySelector('.btn--submit') as HTMLButtonElement;
+function enableForm(): void {
+  const formInput = document.querySelector('.search__box') as HTMLInputElement;
+  const submitButton = document.querySelector('.btn--submit') as HTMLButtonElement;
 
   // Enable input
   formInput.classList.toggle('search__box--disabled');
@@ -37,30 +78,26 @@ function enableForm() {
 }
 
 // Show and hide the loader
-function toggleLoader() {
+function toggleLoader(): void {
   const loader = document.querySelector('.icon--loader') as HTMLSpanElement;
   loader.classList.toggle('hidden');
 }
 
-function clearResultsSection() {
+function clearResultsSection(): void {
   const cards = document.querySelectorAll('.card') as NodeListOf<HTMLDivElement>;
   const error = document.querySelector('.message--error') as HTMLHtmlElement;
 
-  // Check if there are results present from a previous search, so to provide a clean state
-  // If it exists, save that NodeList of elements (each search result)
   if (cards) {
-    // Iterate and remove all of them
     cards.forEach((card) => card.remove());
   }
 
   // Check if the 'Movie not found' error from a previous search is present
-  // If it exists, remove
   if (error) {
     error.remove();
   }
 }
 
-function showError() {
+function showError(): void {
   const searchResultsContainer = document.querySelector('.search-results-container') as HTMLDivElement;
 
   searchResultsContainer.insertAdjacentHTML(
@@ -77,11 +114,12 @@ function showResults(searchResults: searchResults): void {
   if (searchResults.Response === 'False') {
     showError();
   } else {
-    // Show the movies
+    // Show the search results
     searchResults.Search.forEach((movieResult: movieResult) => {
       const searchResultsContainer = document.querySelector('.search-results-container') as HTMLDivElement;
       let moviePoster: string = movieResult.Poster;
 
+      // If not poster was found, use a default image
       if (movieResult.Poster === 'N/A') {
         moviePoster = 'assets/images/404.jpg';
       }
@@ -102,7 +140,7 @@ function showResults(searchResults: searchResults): void {
   }
 }
 
-function showPagination(results: searchResults, movie: string, pageNumber: number) {
+function calculatePagination(results: searchResults, pageNumber: number): (number | string)[] {
   // Calculate the total amount of pages according the the amount of movies shown per page
   const totalPagesNumber = Math.ceil(results.totalResults / 10);
 
@@ -112,7 +150,6 @@ function showPagination(results: searchResults, movie: string, pageNumber: numbe
       .fill(undefined)
       .map((value, index) => index + start);
   };
-
 
   const pagination = (currentPage: number, pageCount = totalPagesNumber): (number | string)[] => {
     let delta;
@@ -156,29 +193,33 @@ function showPagination(results: searchResults, movie: string, pageNumber: numbe
     return pages;
   };
 
-  // Show pagination container at the top and at the bottom
-  const searchResults = document.querySelector('.search-results') as HTMLDivElement;
+  return pagination(pageNumber, totalPagesNumber);
+}
 
+function showPagination(results: searchResults, movie: string, pageNumber: number): void {
+
+  // Calculate the array pf pages to show
+  const pagination = calculatePagination(results, pageNumber);
+
+  // Create pagination container at the top and at the bottom
+  const searchResults = document.querySelector('.search-results') as HTMLDivElement;
   searchResults.insertAdjacentHTML(
     'afterbegin',
     `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`
   );
-
   searchResults.insertAdjacentHTML(
     'beforeend',
     `<div class="pagination"><span class="pagination__text">Showing ${results.Search.length} of ${results.totalResults} results</span></div>`
   );
 
-  // Create pagination container for the numbers
+  // Create container only for the page numbers
   document.querySelectorAll('.pagination').forEach((element) => {
     element.insertAdjacentHTML('beforeend', `<div class="pagination__numbers"></div>`);
   });
 
-  //Show the page numbers
+  // Create the page numbers
   document.querySelectorAll('.pagination__numbers').forEach((element) => {
-    const pages = pagination(pageNumber, totalPagesNumber);
-
-    pages.forEach((page) => {
+    pagination.forEach((page) => {
       element.insertAdjacentHTML('beforeend', `<button data-page="${page}" class="btn btn--pagination">${page}</button>`);
     });
   });
@@ -192,7 +233,7 @@ function showPagination(results: searchResults, movie: string, pageNumber: numbe
   const paginationButtons = document.querySelectorAll('.btn--pagination') as NodeListOf<HTMLButtonElement>
 
   paginationButtons.forEach((button) => {
-    // Store the number of the button to indicate the page of results to fetch function
+    // Save the number of the clicked button to later send it to the fetch function
     const pageNumber = Number(button.dataset.page);
 
     // If button has dots, do not add functionality
@@ -207,40 +248,3 @@ function showPagination(results: searchResults, movie: string, pageNumber: numbe
 function removePagination() {
   document.querySelectorAll('.pagination').forEach((element) => element.remove());
 }
-
-function searchMovie(movieName = '', pageNumber = 1) {
-  const searchBox = document.querySelector('.search__box') as HTMLInputElement;
-
-  // Clear the section from any previous elements
-  clearResultsSection();
-  removePagination();
-
-  // Save the name of the movie to search
-  movieName = searchBox.value;
-
-  // Disable the form while searching, using the event as parameter
-  disableForm();
-
-  // Show loader while searching
-  toggleLoader();
-
-  // Simulate delay for illustration purposes
-  setTimeout(() => {
-    fetchMovie(movieName, pageNumber)
-      .then((searchResults) => {
-        showResults(searchResults);
-        showPagination(searchResults, movieName, pageNumber);
-        toggleLoader();
-        enableForm();
-      })
-      .catch((error) => console.log(error.message));
-  }, 3000);
-}
-
-const searchForm = document.querySelector('.search') as HTMLFormElement;
-
-searchForm.addEventListener('submit', (e) => {
-  // Don't want the form to submit
-  e.preventDefault();
-  searchMovie();
-});
