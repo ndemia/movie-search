@@ -34,8 +34,6 @@ function searchMovie(movieName = '', pageNumber = 1) {
       .then((searchResults) => {
         showResults(searchResults);
         showPagination(searchResults, movieName, pageNumber);
-        toggleLoader();
-        enableForm();
       })
       .catch((error) => console.log(error.message));
   }, 3000);
@@ -45,6 +43,39 @@ async function fetchMovie(movieName: string, pageNumber = 1) {
   const response = await fetch(`./.netlify/functions/fetch-movie?s=${movieName}&page=${pageNumber}`);
   const movieSearchResults = await response.json();
   return movieSearchResults;
+}
+
+function showResults(searchResults: searchResults): void {
+  // If no movie was found, show error
+  if (searchResults.Response === 'False') {
+    showError();
+  } else {
+    // Show the search results
+    searchResults.Search.forEach((movieResult: movieResult) => {
+      const searchResultsContainer = document.querySelector('.search-results-container') as HTMLDivElement;
+      let moviePoster: string = movieResult.Poster;
+
+      // If not poster was found, use a default image
+      if (movieResult.Poster === 'N/A') {
+        moviePoster = 'assets/images/404.jpg';
+      }
+
+      searchResultsContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="card">
+        <figure class="card__figure">
+          <img class="card__image" src="${moviePoster}" alt="${movieResult.Title} movie poster">
+        </figure>
+        <div class="card__info">
+          <h2 class="card__title" title="${movieResult.Title}">${movieResult.Title}</h2>
+          <h3 class="card__year">${movieResult.Year}</h3>
+        </div>
+      </div>`
+      );
+    });
+    toggleLoader();
+    enableForm();
+  }
 }
 
 function disableForm(): void {
@@ -100,44 +131,17 @@ function clearResultsSection(): void {
 function showError(): void {
   const searchResultsContainer = document.querySelector('.search-results-container') as HTMLDivElement;
 
+  toggleLoader();
+
   searchResultsContainer.insertAdjacentHTML(
     'beforeend',
     `<div class="message message--error">
     <span class="icon icon--error"></span>
-    <p class="message__test">Movie not found :(</p>
+    <p class="message__text">Movie not found.</p>
   </div>`
   );
-}
 
-function showResults(searchResults: searchResults): void {
-  // If no movie was found, show error
-  if (searchResults.Response === 'False') {
-    showError();
-  } else {
-    // Show the search results
-    searchResults.Search.forEach((movieResult: movieResult) => {
-      const searchResultsContainer = document.querySelector('.search-results-container') as HTMLDivElement;
-      let moviePoster: string = movieResult.Poster;
-
-      // If not poster was found, use a default image
-      if (movieResult.Poster === 'N/A') {
-        moviePoster = 'assets/images/404.jpg';
-      }
-
-      searchResultsContainer.insertAdjacentHTML(
-        'beforeend',
-        `<div class="card">
-        <figure class="card__figure">
-          <img class="card__image" src="${moviePoster}" alt="${movieResult.Title} movie poster">
-        </figure>
-        <div class="card__info">
-          <h2 class="card__title" title="${movieResult.Title}">${movieResult.Title}</h2>
-          <h3 class="card__year">${movieResult.Year}</h3>
-        </div>
-      </div>`
-      );
-    });
-  }
+  enableForm();
 }
 
 function calculatePagination(results: searchResults, pageNumber: number): (number | string)[] {
