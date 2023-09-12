@@ -8,7 +8,7 @@ Another of my interview test series. This time around, I did manage to pass the 
 ## Tech stack
 HTML, CSS (SASS), TypeScript.
 
-## Process & Requirements
+## Requirements
 - The assignment was meant to be completed in vanilla JavaScript, without any frameworks or libraries. I've rebuilt it using TypeScript, improving it wherever I could, and to get more familiar with it.
 - I was not allowed to use any framework to make the request (Axios or similar). UI frameworks were allowed but highly discouraged.
 - Mobile-first approach.
@@ -21,8 +21,6 @@ HTML, CSS (SASS), TypeScript.
 - Learning how to manage and hide the API key, in order to be able to publish the project on GitHub, also took some time to properly grasp. 
 
 ## Learnings
-- I got more comfortable with promises and asynchronous JavaScript in general, as well as with TypeScript.
-- Learned about Netlify, hiding API keys in environment variables, and deploying to it.
-- Getting more familiar with testing accessibility, with keyboard navigation and screen-readers.
+I got more comfortable with promises and asynchronous JavaScript in general, as well as with TypeScript. Learned about Netlify, hiding API keys in environment variables, and deploying to it. Got more familiar with testing accessibility, with keyboard navigation and screen-readers.
 
 https://ndemia-movie.netlify.app/
