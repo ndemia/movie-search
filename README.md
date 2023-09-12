@@ -4,7 +4,7 @@
 
 ## Context
 
-Another of my interview test series. I applied for a position at a company I was dying to work for. This time around, I did manage to pass the technical assessment! With some good parts and some bad parts, of course. But in the end, I didn't make it.
+Another of my interview test series. This time around, I did manage to pass the technical assessment! With some good parts and some bad parts, of course.
 
 ## Constraints
 I was not allowed to use any framework to make the request (Axios or similar). UI frameworks were allowed but highly discouraged.
