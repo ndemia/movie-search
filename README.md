@@ -3,17 +3,14 @@
 ![Image of the search movie website](https://demia.me/assets/images/movie_x2.png)
 
 ## Context
-
 Another of my interview test series. This time around, I did manage to pass the technical assessment! With some good parts and some bad parts, of course.
-
-## Constraints
-I was not allowed to use any framework to make the request (Axios or similar). UI frameworks were allowed but highly discouraged.
 
 ## Tech stack
 HTML, CSS (SASS), TypeScript.
 
 ## Process & Requirements
 - The assignment was meant to be completed in vanilla JavaScript, without any frameworks or libraries. I've rebuilt it using TypeScript, improving it wherever I could, and to get more familiar with it.
+- I was not allowed to use any framework to make the request (Axios or similar). UI frameworks were allowed but highly discouraged.
 - Mobile-first approach.
 - Each result should have its own card (or among those lines, can't remember exactly as it was long ago and I haven't kept the documentation).
 - ~~There has to be a top bar, where the search box will be located.~~ I'm going to ditch this :)
